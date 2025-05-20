@@ -1,6 +1,9 @@
 import { Router } from "express"
 import { database } from "./db.js"
 
+
+import req from "express/lib/request.js";
+import res, { status } from "express/lib/response.js";
 const dadosUsuario = [
     "name","email","password"
 ] 
@@ -26,6 +29,7 @@ userRoutes.get("",(req,res)=>{
     })
     return res.status(200).json(returnusers)
 })
+    return res.status(200).json(users)
 
 userRoutes.get("/:id",(req,res)=>{
     const findUser = database.users.find((user)=>user.id === req.params.id)
@@ -34,6 +38,8 @@ userRoutes.get("/:id",(req,res)=>{
     }
     return res.status(200).json(findUser)
 })
+
+
 userRoutes.post("",(req,res)=>{
     const infos = Object.keys(req.body)
     console.log(infos,"infos")
@@ -57,7 +63,9 @@ userRoutes.post("",(req,res)=>{
  
     database.users.push(user)
     return res.status(201).json(user)
+
 })
+
 
 userRoutes.put("/:id", (req, res) => {
     const index = database.users.findIndex(user => user.id === req.params.id);
@@ -73,13 +81,15 @@ userRoutes.put("/:id", (req, res) => {
         usuarioAtualizado.id = req.params.id;
         database.users[index] = usuarioAtualizado;
         return res.json(usuarioAtualizado);
-    })
+
+    });
 
     userRoutes.delete("/:d", (req, res) => {
         const index = database.users.findIndex(user => user.id === req.params.id);
         if(index === -1) return res.status(404).json({error: "Usuário não existe"});
 
         database.users.splice(index, 1);
+
         return res.status(204).send()
     })
 
@@ -102,3 +112,5 @@ userRoutes.put("/:id", (req, res) => {
         database.users[findIndex] = updateUser
         return res.status(200).json(updateUser)
     })
+        return res.json({ message: "Usuário removido"});
+
